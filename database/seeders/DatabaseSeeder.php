@@ -3,6 +3,14 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\AudienceLevel;
+use App\Models\Department;
+use App\Models\NotificationType;
+use App\Models\Role;
+use App\Models\Status;
+use App\Models\Type;
+use App\Models\UserRole;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,10 +22,12 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Pi',
+            'email' => 'pos@nexgen.com',
+        ]);
+
+
 
         $audience_levels = ['HR', 'Public'];
         $departments = [
@@ -26,6 +36,46 @@ class DatabaseSeeder extends Seeder
         ];
         $types = ['တိုင်ကြားစာ', 'အကြံပြုစာ'];
 
-        $statuses = ['request', 'published', 'suspend', 'well-noted'];
+        $statuses = ['request', 'well-noted', 'published', 'suspend',];
+
+        $roles = ['Admin', 'HR', 'Leadership', 'Staff', 'Guest',];
+
+        $noti_types = ['Create Post', 'Update Post', 'Delete Post', 'Love', 'Vote'];
+
+        foreach ($noti_types as $noti) {
+            NotificationType::factory()->create([
+                'name' => $noti
+            ]);
+        }
+        foreach ($audience_levels as $level) {
+            AudienceLevel::factory()->create([
+                'name' => $level
+            ]);
+        }
+        foreach ($departments as $dep) {
+            Department::factory()->create([
+                'name' => $dep
+            ]);
+        }
+        foreach ($types as $type) {
+            Type::factory()->create([
+                'name' => $type
+            ]);
+        }
+        foreach ($statuses as $status) {
+            Status::factory()->create([
+                'name' => $status
+            ]);
+        }
+        foreach ($roles as $role) {
+            Role::factory()->create([
+                'name' => $role
+            ]);
+        }
+
+        UserRole::factory()->create([
+            'user_id' => 1,
+            'role_id' => 1,
+        ]);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\YPY\PostsHR;
 use App\Livewire\YPY\Publish;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', Publish::class);
+Route::get('/', Publish::class)->middleware('auth')->name('home');
+Route::get('post/hr', PostsHR::class)->middleware('auth')->name('post.hr');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('content');
-            $table->boolean('is_read')->default(false);
+            $table->foreignId('notification_type_id')->constrained();
+            $table->string('content')->nullable();
+            $table->boolean('is_read')->default(false); // for
             $table->timestamps();
+
+            $table->foreignId('react_user_id')->references('id')->on('users');
         });
     }
 
