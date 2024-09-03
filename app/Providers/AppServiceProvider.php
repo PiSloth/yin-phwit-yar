@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->register(NotiComposerServiceProvider::class);
     }
 
     /**
@@ -22,8 +23,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('isHR', function (User $user) {
-            $array = ['Admin', 'HR'];
-            return in_array($user->role->name, $array);
+            $roles = ['Admin', 'HR'];
+
+            $data = UserRole::whereUserId($user->id)->get()->first();
+            $name = $data->role->name;
+            return in_array($name, $roles);
         });
     }
 }

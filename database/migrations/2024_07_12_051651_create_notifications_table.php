@@ -15,11 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
             $table->foreignId('notification_type_id')->constrained();
-            $table->string('content')->nullable();
-            $table->boolean('is_read')->default(false); // for
+            $table->foreignId('created_by_id')->references('id')->on('users');
+            $table->foreignId('comment_id')->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreignId('react_user_id')->references('id')->on('users');
         });
     }
 

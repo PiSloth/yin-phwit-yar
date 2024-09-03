@@ -40,25 +40,29 @@ class Publish extends Component
                 'post_id' => $post->id,
                 'content' => $this->content,
             ]);
-
-
-
-            // Notification::create([
-            //     'notifaciton_type_id' => 1, //Create Post
-            //     'post_id' => $post->id,
-            // ]);
-
         });
 
+        $this->reset('content', 'department_id', 'type_id');
         $this->notification()->send([
             'title'       => 'Profile saved!',
             'description' => 'Your profile was successfully saved',
             'icon'        => 'success'
         ]);
+
+        $this->dialog()->success(
+            $title = 'Thanks',
+            $description = 'Your post successfully send to HR'
+        );
     }
 
     public function createPublicPost()
     {
+        // use a simple syntax
+        $this->dialog()->success(
+            $title = 'Hi Buddy',
+            $description = 'We will be very soon for Public post'
+        );
+
         $this->validate([
             'content' => 'required',
         ]);
@@ -67,6 +71,12 @@ class Publish extends Component
 
     public function render()
     {
+        $results = DB::table('comments')
+            ->leftJoin('users', 'users.id', '=', 'comments.commentor_id')
+            ->select('comments.post_id', 'users.name', 'comments.comment')
+            ->get();
+        // dd($results);
+
         return view('livewire.y-p-y.publish', [
             'departments' => Department::all(),
             'types' => Type::all(),

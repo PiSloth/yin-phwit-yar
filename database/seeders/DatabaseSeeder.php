@@ -31,8 +31,14 @@ class DatabaseSeeder extends Seeder
 
         $audience_levels = ['HR', 'Public'];
         $departments = [
-            'Shwetatar Co.,Ltd', 'Leadership', 'Digital Marketing', 'Finance & Accounting',
-            'GM Office', 'Ground Sale', 'Online Sale', 'HR & Admin '
+            'Shwetatar Co.,Ltd',
+            'Leadership',
+            'Digital Marketing',
+            'Finance & Accounting',
+            'GM Office',
+            'Ground Sale',
+            'Online Sale',
+            'HR & Admin '
         ];
         $types = ['တိုင်ကြားစာ', 'အကြံပြုစာ'];
 
@@ -40,7 +46,7 @@ class DatabaseSeeder extends Seeder
 
         $roles = ['Admin', 'HR', 'Leadership', 'Staff', 'Guest',];
 
-        $noti_types = ['Create Post', 'Update Post', 'Delete Post', 'Love', 'Vote'];
+        $noti_types = ['Create Post', 'Update Post', 'Delete Post', 'Love', 'Vote', 'Comment'];
 
         foreach ($noti_types as $noti) {
             NotificationType::factory()->create([

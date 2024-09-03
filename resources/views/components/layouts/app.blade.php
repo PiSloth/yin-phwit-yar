@@ -13,6 +13,7 @@
 
 <body>
     <x-notifications />
+    <x-dialog z-index="z-50" blur="md" align="center" />
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         <livewire:layout.navigation />
 

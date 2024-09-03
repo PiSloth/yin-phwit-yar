@@ -30,10 +30,19 @@ $logout = function (Logout $logout) {
 
                     <x-nav-link :href="route('post.hr')" :active="request()->routeIs('post.hr')" wire:navigate>
                         Private Post
+                        <span class="ml-1 -mt-2 rounded text-blue-500 text-xs">{{ $newHrPostCount }}</span>
                     </x-nav-link>
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>
                         HOME
                     </x-nav-link>
+                    <x-nav-link href="#" @click="$openModal('noti')">
+                        Noti
+                    </x-nav-link>
+                    <button wire:click="logout" class="w-full text-start">
+                        <x-dropdown-link>
+                            {{ __('Log Out') }}
+                        </x-dropdown-link>
+                    </button>
                 </div>
             </div>
 
@@ -56,8 +65,7 @@ $logout = function (Logout $logout) {
                             </div>
                         </button>
                     </x-slot>
-
-                    <x-slot name="content">
+                    <x-slot name="content" class="w-48">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
                             {{ __('Profile') }}
                         </x-dropdown-link>
@@ -123,4 +131,21 @@ $logout = function (Logout $logout) {
             </div>
         </div>
     </div>
+
+    <x-modal name="noti" blur="sm">
+        <div class="bg-gray-100 rounded-lg shadow-2xl max-w-xl">
+            <x-card title="Hand back">
+                <ul>
+                    @foreach ($notis as $noti)
+                        <div class="bg-slate-200 p-3 rounded mb-3">
+                            <a href="{{ route('view-post', ['id' => $noti->post_id]) }}">
+                                <span class="text-blue-400">{{ $noti->name }}</span> Comment to your post
+                                <i>"{{ $noti->comment }}"</i>
+                            </a>
+                        </div>
+                    @endforeach
+                </ul>
+            </x-card>
+        </div>
+    </x-modal>
 </nav>
