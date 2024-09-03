@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Notification;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -39,6 +40,7 @@ class PostsHR extends Component
                 'comment_id' => $comment->id,
             ]);
         });
+        $this->dispatch('close-maodal');
         $this->reset('reply');
         $this->dispatch('close-modal');
     }
@@ -46,13 +48,25 @@ class PostsHR extends Component
     #[Title('To HR')]
     public function render()
     {
-        $posts = Post::where('audience_level_id', 1)
+        if(Gate::allows('isHR')){
+               $posts = Post::where('audience_level_id', 1)
             ->leftJoin('comments', 'posts.id', '=', 'comments.post_id')
             ->select('posts.*', DB::raw('COUNT(comments.id) as comments_count'))
             ->groupBy('posts.id')
             ->orderByRaw('comments_count = 0 DESC')
             ->orderBy('posts.id', 'desc')
             ->get();
+        }else{
+            $posts = Post::where('user_id', auth()->user()->id)
+            ->leftJoin('comments', 'posts.id', '=', 'comments.post_id')
+            ->select('posts.*', DB::raw('COUNT(comments.id) as comments_count'))
+            ->groupBy('posts.id')
+            ->orderByRaw('comments_count = 0 DESC')
+            ->orderBy('posts.id', 'desc')
+            ->get();
+
+        }
+
 
         // $postCount = Post::where('audience_level_id', 1)
         //     ->whereDoesntHave('comments')

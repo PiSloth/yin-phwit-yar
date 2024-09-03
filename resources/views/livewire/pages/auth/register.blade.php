@@ -1,11 +1,16 @@
 <?php
+session_start();
 
 use App\Models\User;
+use App\Models\UserRole;
+use App\Models\ValidateQuestion;
+
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\DB;
 
 use function Livewire\Volt\layout;
 use function Livewire\Volt\rules;
@@ -18,6 +23,7 @@ state([
     'email' => '',
     'password' => '',
     'password_confirmation' => '',
+    'answer' => '',
 ]);
 
 rules([
@@ -27,20 +33,52 @@ rules([
 ]);
 
 $register = function () {
-    $validated = $this->validate();
+    DB::transaction(function () {
+        $check = ValidateQuestion::where('answer', $this->answer)->exists();
 
-    $validated['password'] = Hash::make($validated['password']);
+if(!$check){
 
-    event(new Registered(($user = User::create($validated))));
+    // $_SESSION['error'] = 'Error';
+    return ;
+}
+        $validated = $this->validate();
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        // Create the user
+        $user = User::create($validated);
+
+        // Create a UserRole record with the newly created user
+        // Assume you have a default role_id to assign. For example, 1 might be the default role ID.
+        $roleId = 5; // Adjust this according to your application's role logic
+        UserRole::create([
+            'user_id' => $user->id,
+            'role_id' => $roleId,
+        ]);
+
+    // Fire the Registered event
+
+    event(new Registered($user));
+
+    // event(new Registered(($user = User::create($validated))));
 
     Auth::login($user);
 
-    $this->redirect(RouteServiceProvider::HOME, navigate: true);
+     $this->redirect(RouteServiceProvider::HOME, navigate: true);
+
+    });
+
+
+
 };
 
 ?>
 
 <div>
+    {{-- @if(session('error'))
+        <span>{{ session('error')}}</span>
+    @endif --}}
+
     <form wire:submit="register">
         <!-- Name -->
         <div>
@@ -76,6 +114,12 @@ $register = function () {
                 type="password" name="password_confirmation" required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <!-- Verify Code -->
+        <div class="mt-4">
+            <x-input-label for="answer" :value="__('Verify Code')" />
+            <x-input wire:model="answer" id="answer" class="bock mt-1 w-full" type="text" required />
         </div>
 
         <div class="flex items-center justify-end mt-4">

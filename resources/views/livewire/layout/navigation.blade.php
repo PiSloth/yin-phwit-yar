@@ -16,24 +16,27 @@ $logout = function (Logout $logout) {
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                {{-- <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" wire:navigate>
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    {{-- <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
 
-                    <x-nav-link :href="route('post.hr')" :active="request()->routeIs('post.hr')" wire:navigate>
-                        Private Post
-                        <span class="ml-1 -mt-2 rounded text-blue-500 text-xs">{{ $newHrPostCount }}</span>
-                    </x-nav-link>
+
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>
-                        HOME
+                        Compose
+                    </x-nav-link>
+                    <x-nav-link :href="route('post.hr')" :active="request()->routeIs('post.hr')" wire:navigate>
+                        Posts
+                        @can('isHR')
+                            <span class="ml-1  rounded text-blue-500 text-xs">{{ $newHrPostCount }}</span>
+                        @endcan
                     </x-nav-link>
                     <x-nav-link href="#" @click="$openModal('noti')">
                         Noti
@@ -98,15 +101,22 @@ $logout = function (Logout $logout) {
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+        {{-- <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-        </div>
+        </div> --}}
         <div class="pt-2 pb-3 space-y-1">
-            <x-nav-link :href="route('post.hr')" :active="request()->routeIs('post.hr')" wire:navigate>
-                Private Post
-            </x-nav-link>
+
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" wire:navigate>
+                Compose
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('post.hr')" :active="request()->routeIs('post.hr')" wire:navigate>
+                Posts
+            </x-responsive-nav-link>
+            <x-responsive-nav-link @click="$openModal('noti')">
+                Notifications
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -134,16 +144,21 @@ $logout = function (Logout $logout) {
 
     <x-modal name="noti" blur="sm">
         <div class="bg-gray-100 rounded-lg shadow-2xl max-w-xl">
-            <x-card title="Hand back">
+            <x-card title="Your Notifications">
                 <ul>
-                    @foreach ($notis as $noti)
-                        <div class="bg-slate-200 p-3 rounded mb-3">
-                            <a href="{{ route('view-post', ['id' => $noti->post_id]) }}">
+                    @forelse ($notis as $noti)
+                        <a href="{{ route('view-post', ['id' => $noti->post_id, 'noti' => $noti->commentId]) }}">
+                            <div
+                                class="truncate ... {{ $noti->readComment ? 'bg-slate-200' : 'bg-blue-600 text-white' }} p-3 rounded mb-3">
                                 <span class="text-blue-400">{{ $noti->name }}</span> Comment to your post
                                 <i>"{{ $noti->comment }}"</i>
-                            </a>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="w-64">
+                            Nothing to show
                         </div>
-                    @endforeach
+                    @endforelse
                 </ul>
             </x-card>
         </div>

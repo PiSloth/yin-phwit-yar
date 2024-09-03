@@ -19,8 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Publish::class)->middleware('auth')->name('home');
 Route::get('post/hr', PostsHR::class)
     ->middleware('auth')
-    ->name('post.hr')
-    ->can('isHR');
+    ->name('post.hr');
 
 Route::get('/post/detail', ViewPost::class)->middleware('auth')->name('view-post');
 
